@@ -17,31 +17,31 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+import java.io.InputStreamReader;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Service;
-import org.osgi.service.log.LogService;
 
-import de.hu_berlin.german.korpling.saltnpepper.misc.treetagger.tokenizer.TTTokenizer;
-import de.hu_berlin.german.korpling.saltnpepper.misc.treetagger.tokenizer.Token;
-import de.hu_berlin.german.korpling.saltnpepper.misc.treetagger.tokenizer.TTTokenizer.TT_LANGUAGES;
+import com.neovisionaries.i18n.LanguageCode;
+
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleNotReadyException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperManipulator;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperManipulatorImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltProject;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
+import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.exceptions.TokenizerException;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualRelation;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SToken;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 /**
@@ -59,66 +59,69 @@ public class Tokenizer extends PepperManipulatorImpl
 	{
 		super();
 		this.name= "Tokenizer";
+		this.setProperties(new TokenizerProperties());
 	}
 	
-	private File abbreviationFolder= null;
 	/**
-	 * Returns the Abbriviation folder, where to find abbreviation files for the Treetagger tokenizer.
-	 * @return
+	 * stores all abbreviations corresponding to their language
 	 */
-	private synchronized File getAbbriviationFolder()
-	{
-		if (abbreviationFolder== null)
-			abbreviationFolder= new File(this.getResources().toFileString()+"/tokenizer/abbreviations");
-		
-		return(abbreviationFolder);
-	}
+	private Map<LanguageCode, HashSet<String>> abbreviationMap= null; 
 	
-	private TT_LANGUAGES language= null;
 	/**
-	 * Returns the language of the STextualDS given by a property file.
-	 * @return
+	 * Checks abbreviation folder in case of t is set.
 	 */
-	private synchronized TTTokenizer.TT_LANGUAGES getLanguage()
+	@Override
+	public boolean isReadyToStart() throws PepperModuleNotReadyException
 	{
-		if (language== null)
+		if (((TokenizerProperties)this.getProperties()).getAbbreviationFolder()!= null)
 		{
-			if (this.getSpecialParams()!= null)
-			{
-				//default case
-				language= TT_LANGUAGES.EN;
-				Properties props= new Properties();
-				{//load properties
-					InputStream in= null;
-					try {
-						in = new FileInputStream(this.getSpecialParams().toFileString());
-						props.load(in);
-					} catch (FileNotFoundException e) {
-						if (this.getLogService()!= null)
-							this.getLogService().log(LogService.LOG_WARNING, "Cannot load property file '"+this.getSpecialParams()+"' for module '"+this.getName()+"', because of nested exception. ",e);
-					} catch (IOException e) {
-						if (this.getLogService()!= null)
-							this.getLogService().log(LogService.LOG_WARNING, "Cannot load property file '"+this.getSpecialParams()+"' for module '"+this.getName()+"', because of nested exception. ",e);
-					}
-					finally
-					{
-						if (in!= null)
-						try {
-							in.close();
-						} catch (IOException e) {
-							if (this.getLogService()!= null)
-								this.getLogService().log(LogService.LOG_WARNING, "Cannot close property file '"+this.getSpecialParams()+"' for module '"+this.getName()+"', because of nested exception. ",e);
+			loadAbbFolder();
+		}
+		return(true);
+	}
+	
+	/**
+	 * Checks abbreviation folder, if it contains abbreviation files (files with decoded language endings like *.de, *.en, etyc.)
+	 */
+	private void loadAbbFolder()
+	{
+		File abbFolder= ((TokenizerProperties)this.getProperties()).getAbbreviationFolder();
+		File[] abbFiles= abbFolder.listFiles();
+		if (abbFiles!= null)
+		{
+			for (File abbFile: abbFiles)
+			{//check if file ending is a ISO 639-2 code
+				String ending= FilenameUtils.getExtension(abbFile.getName());
+				LanguageCode langCode= LanguageCode.valueOf(ending);
+				if (langCode!= null)
+				{//file is abbreviation file, load it
+					if (abbreviationMap== null)
+						abbreviationMap= new ConcurrentHashMap<LanguageCode, HashSet<String>>();
+					HashSet<String> abbreviations= null;
+			    	try 
+			    	{
+			    		abbreviations= new HashSet<String>();
+			    		BufferedReader inReader;
+						inReader = new BufferedReader(new InputStreamReader(new FileInputStream(abbFile.getAbsolutePath()), "UTF8"));
+						String input = "";
+						while((input = inReader.readLine()) != null)
+						{
+				           //putting
+				           abbreviations.add(input);
 						}
+						inReader.close();
+						
+			        } catch (FileNotFoundException e) 
+			        {
+						throw new TokenizerException("Cannot tokenize the given text, because the file for abbreviation '"+abbFile.getAbsolutePath()+"' was not found.");
+					} catch (IOException e) 
+					{
+						throw new TokenizerException("Cannot tokenize the given text, because can not read file '"+abbFile.getAbsolutePath()+"'.");
 					}
-				}//load properties
-				String prop= props.getProperty(PROP_TOKENIZER_LANGUAGE).trim();
-				if (prop!= null)
-				{
-					this.language= TT_LANGUAGES.valueOf(prop);
-				}
+					abbreviationMap.put(langCode, abbreviations);
+				}//file is abbreviation file, load it
 			}
 		}
-		return(language);
 	}
 	
 	/**
@@ -137,28 +140,20 @@ public class Tokenizer extends PepperManipulatorImpl
 			SDocumentGraph sDocGraph= ((SDocument)sElementId.getSIdentifiableElement()).getSDocumentGraph();
 			if(sDocGraph!= null)
 			{//if document contains a document graph
-				if (sDocGraph.getSTextualDSs()!= null)
+				de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer tokenizer= sDocGraph.createTokenizer();
+				if (this.abbreviationMap!= null)
 				{
-					for (STextualDS sText: sDocGraph.getSTextualDSs())
+					Set<LanguageCode> keys= abbreviationMap.keySet();
+					for (LanguageCode lang: keys)
 					{
-						if (sText!= null)
-						{
-							TTTokenizer tokenizer= new TTTokenizer();
-							tokenizer.setAbbreviationFolder(this.getAbbriviationFolder());
-							tokenizer.setLngLang(this.getLanguage());
-							for (Token token: tokenizer.tokenizeToToken(sText.getSText()))
-							{
-								SToken sTok= SaltFactory.eINSTANCE.createSToken();
-								sDocGraph.addSNode(sTok);
-								STextualRelation sTextRelation= SaltFactory.eINSTANCE.createSTextualRelation();
-								sTextRelation.setSStart(token.start);
-								sTextRelation.setSEnd(token.end);
-								sTextRelation.setSToken(sTok);
-								sTextRelation.setSTextualDS(sText);
-								sDocGraph.addSRelation(sTextRelation);
-							}
-						}
+						tokenizer.addAbbreviation(lang, abbreviationMap.get(lang));
 					}
+				}
+				if (	(sDocGraph.getSTextualDSs()!= null)&&
+						(sDocGraph.getSTextualDSs().size()>0))
+				{
+					for (STextualDS sTextualDs: sDocGraph.getSTextualDSs())
+						tokenizer.tokenize(sTextualDs);
 				}
 			}//if document contains a document graph
 		}//only if given sElementId belongs to an object of type SDocument or SCorpus
