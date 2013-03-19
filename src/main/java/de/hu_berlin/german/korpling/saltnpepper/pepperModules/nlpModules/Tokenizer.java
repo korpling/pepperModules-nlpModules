@@ -29,14 +29,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
+import org.osgi.service.component.annotations.Component;
 
 import com.neovisionaries.i18n.LanguageCode;
 
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleException;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleNotReadyException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperManipulator;
 import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperManipulatorImpl;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.exceptions.TokenizerException;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
@@ -52,7 +50,6 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
  *
  */
 @Component(name="TokenizerComponent", factory="PepperManipulatorComponentFactory")
-@Service(value=PepperManipulator.class)
 public class Tokenizer extends PepperManipulatorImpl 
 {
 	public Tokenizer()
