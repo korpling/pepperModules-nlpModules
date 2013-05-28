@@ -7,14 +7,33 @@
         <authorgroup>
             <author>
                 <personname>
-                    <firstname>YOUR</firstname>
-                    <surname>NAME</surname>
+                    <firstname>Florian</firstname>
+                    <surname>Zipser</surname>
                 </personname>
+                <email>saltnpepper@lists.hu-berlin.de</email>
+            </author>
+            <author>
+                <orgname xml:id="snp_org1"> INRIA </orgname>
+            </author>
+            <author>
+                <orgname xml:id="snp_org2"> SFB 632 Information Structure / D1 Linguistic Database </orgname>
+            </author>
+            <author>
+                <orgname xml:id="snp_org3"> Humboldt-Universität zu Berlin </orgname>
+            </author>
+            <author>
+                <orgname xml:id="snp_org4"> Universität Potsdam </orgname>
             </author>
         </authorgroup>
         <copyright>
-            <year>THE DATE OF NOW</year>
-            <holder>YOUR NAME, All rights reserved.</holder>
+            <year>2009</year>
+            <holder>
+                INRIA, 
+                SFB 632 Information Structure / D1 Linguistic Database, 
+                Humboldt-Universität zu Berlin, 
+                Universität Potsdam, 
+                All rights reserved.
+            </holder>
         </copyright>
         <releaseinfo>Version ${project.version}</releaseinfo>
     </info>
@@ -34,7 +53,10 @@
             coordinates in a pepper workflow description file to identify the modules in a pepper
             conversion process. A description of how to model a workfloe description file can be
             found under https://korpling.german.hu-berlin.de/saltnpepper/.</para>
-        <para>This project provides an access to the tokenizer of Salt via pepper. This is a java implementation of the TreeTagger tokenizer. The tokenizer will tokenize all STetxualDS objects of each document and will create word-like SToken objects.</para>
+        <para>This project provides an access to the tokenizer of Salt via pepper. This is a java
+            implementation of the TreeTagger tokenizer. The tokenizer will tokenize all
+                <classname>STetxualDS</classname> objects of each document and will create word-like
+                <classname>SToken</classname> objects.</para>
         <table xml:id="table_overview" frame="all">
             <title>pepper modules contained in this project</title>
             <tgroup cols="3" align="left" colsep="1" rowsep="1">
