@@ -17,12 +17,18 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.TokenizerProperties;
 
-public class TokenizerPropertiesTest extends TestCase {
+public class TokenizerPropertiesTest{
 	
 	protected TokenizerProperties fixture= null;
 
@@ -33,12 +39,12 @@ public class TokenizerPropertiesTest extends TestCase {
 	public void setFixture(TokenizerProperties fixture) {
 		this.fixture = fixture;
 	}
-	
+	@Before
 	public void setUp()
 	{
 		this.setFixture(new TokenizerProperties());
 	}
-	
+	@Test
 	public void test_PROP_ABBREVIATION_FOLDER()
 	{
 		assertNull(this.getFixture().getAbbreviationFolder());

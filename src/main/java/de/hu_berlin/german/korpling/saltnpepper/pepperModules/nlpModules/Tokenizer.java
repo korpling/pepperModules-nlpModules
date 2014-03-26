@@ -33,12 +33,12 @@ import org.osgi.service.component.annotations.Component;
 
 import com.neovisionaries.i18n.LanguageCode;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperExceptions.PepperModuleNotReadyException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.MAPPING_RESULT;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperManipulatorImpl;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.pepperModules.impl.PepperMapperImpl;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.exceptions.TokenizerException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleNotReadyException;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperManipulatorImpl;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
@@ -56,7 +56,7 @@ public class Tokenizer extends PepperManipulatorImpl
 	public Tokenizer()
 	{
 		super();
-		this.name= "Tokenizer";
+		this.setName("Tokenizer");
 		this.setProperties(new TokenizerProperties());
 	}
 	
@@ -111,10 +111,10 @@ public class Tokenizer extends PepperManipulatorImpl
 						
 			        } catch (FileNotFoundException e) 
 			        {
-						throw new TokenizerException("Cannot tokenize the given text, because the file for abbreviation '"+abbFile.getAbsolutePath()+"' was not found.");
+						throw new PepperModuleException(this, "Cannot tokenize the given text, because the file for abbreviation '"+abbFile.getAbsolutePath()+"' was not found.");
 					} catch (IOException e) 
 					{
-						throw new TokenizerException("Cannot tokenize the given text, because can not read file '"+abbFile.getAbsolutePath()+"'.");
+						throw new PepperModuleException(this, "Cannot tokenize the given text, because can not read file '"+abbFile.getAbsolutePath()+"'.");
 					}
 					abbreviationMap.put(langCode, abbreviations);
 				}//file is abbreviation file, load it
@@ -139,7 +139,7 @@ public class Tokenizer extends PepperManipulatorImpl
 		 * OVERRIDE THIS METHOD FOR CUSTOMIZED MAPPING.
 		 */
 		@Override
-		public MAPPING_RESULT mapSDocument() {
+		public DOCUMENT_STATUS mapSDocument() {
 			SDocumentGraph sDocGraph= getSDocument().getSDocumentGraph();
 			if(sDocGraph!= null)
 			{//if document contains a document graph
@@ -159,42 +159,7 @@ public class Tokenizer extends PepperManipulatorImpl
 						tokenizer.tokenize(sTextualDs);
 				}
 			}//if document contains a document graph
-			return(MAPPING_RESULT.FINISHED);
+			return(DOCUMENT_STATUS.COMPLETED);
 		}
 	}
-	
-//	/**
-//	 * This method is called by method start() of superclass PepperManipulator, if the method was not overriden
-//	 * by the current class. If this is not the case, this method will be called for every document which has
-//	 * to be processed.
-//	 * @param sElementId the id value for the current document or corpus to process  
-//	 */
-//	@Override
-//	public void start(SElementId sElementId) throws PepperModuleException 
-//	{
-//		if (	(sElementId!= null) &&
-//				(sElementId.getSIdentifiableElement()!= null) &&
-//				((sElementId.getSIdentifiableElement() instanceof SDocument)))
-//		{//only if given sElementId belongs to an object of type SDocument or SCorpus	
-//			SDocumentGraph sDocGraph= ((SDocument)sElementId.getSIdentifiableElement()).getSDocumentGraph();
-//			if(sDocGraph!= null)
-//			{//if document contains a document graph
-//				de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer tokenizer= sDocGraph.createTokenizer();
-//				if (this.abbreviationMap!= null)
-//				{
-//					Set<LanguageCode> keys= abbreviationMap.keySet();
-//					for (LanguageCode lang: keys)
-//					{
-//						tokenizer.addAbbreviation(lang, abbreviationMap.get(lang));
-//					}
-//				}
-//				if (	(sDocGraph.getSTextualDSs()!= null)&&
-//						(sDocGraph.getSTextualDSs().size()>0))
-//				{
-//					for (STextualDS sTextualDs: sDocGraph.getSTextualDSs())
-//						tokenizer.tokenize(sTextualDs);
-//				}
-//			}//if document contains a document graph
-//		}//only if given sElementId belongs to an object of type SDocument or SCorpus
-//	}
 }

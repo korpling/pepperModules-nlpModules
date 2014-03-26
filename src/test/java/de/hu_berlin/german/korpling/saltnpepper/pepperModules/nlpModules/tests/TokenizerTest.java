@@ -21,12 +21,14 @@ import java.io.File;
 import java.io.PrintWriter;
 
 import org.eclipse.emf.common.util.URI;
+import org.junit.Before;
+import org.junit.Test;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testSuite.moduleTests.PepperManipulatorTest;
+import static org.junit.Assert.*;
+import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperManipulatorTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.Tokenizer;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.TokenizerProperties;
 import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.SaltCommonFactory;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
@@ -37,25 +39,25 @@ public class TokenizerTest extends PepperManipulatorTest
 	URI resourceURI= URI.createFileURI(new File(".").getAbsolutePath());
 	URI temproraryURI= URI.createFileURI(System.getProperty("java.io.tmpdir"));	
 	
-	protected void setUp() throws Exception 
+	@Before
+	public void setUp() throws Exception 
 	{
 		super.setFixture(new Tokenizer());
 		
-		super.getFixture().setSaltProject(SaltCommonFactory.eINSTANCE.createSaltProject());
+		super.getFixture().setSaltProject(SaltFactory.eINSTANCE.createSaltProject());
 		super.setResourcesURI(resourceURI);
-		super.setTemprorariesURI(temproraryURI);
 		
 		//setting temproraries and resources
-		this.getFixture().setTemproraries(temproraryURI);
 		this.getFixture().setResources(resourceURI);
 	}
 	
 	/**
 	 * two {@link SDocument} objects containing one {@link STextualDS} each. 
 	 */
+	@Test
 	public void testCase1()
 	{
-		SCorpusGraph importedSCorpusGraph= SaltCommonFactory.eINSTANCE.createSCorpusGraph();
+		SCorpusGraph importedSCorpusGraph= SaltFactory.eINSTANCE.createSCorpusGraph();
 		this.getFixture().getSaltProject().getSCorpusGraphs().add(importedSCorpusGraph);
 		
 		String sText="Is this example more complicated, than it is supposed to be?";
@@ -83,9 +85,10 @@ public class TokenizerTest extends PepperManipulatorTest
 	/**
 	 * one {@link SDocument} objects containing two {@link STextualDS} objects. 
 	 */
+	@Test
 	public void testCase2()
 	{
-		SCorpusGraph importedSCorpusGraph= SaltCommonFactory.eINSTANCE.createSCorpusGraph();
+		SCorpusGraph importedSCorpusGraph= SaltFactory.eINSTANCE.createSCorpusGraph();
 		this.getFixture().getSaltProject().getSCorpusGraphs().add(importedSCorpusGraph);
 		
 		String sText="Is this example more complicated, than it is supposed to be?";
@@ -110,9 +113,10 @@ public class TokenizerTest extends PepperManipulatorTest
 	 * one {@link SDocument} objects containing one {@link STextualDS} object with strange abbreviations. 
 	 * @throws Exception 
 	 */
+	@Test
 	public void testCase3() throws Exception
 	{
-		SCorpusGraph importedSCorpusGraph= SaltCommonFactory.eINSTANCE.createSCorpusGraph();
+		SCorpusGraph importedSCorpusGraph= SaltFactory.eINSTANCE.createSCorpusGraph();
 		this.getFixture().getSaltProject().getSCorpusGraphs().add(importedSCorpusGraph);
 		
 		String sText="Is this. example more complicated, than. it is supposed to be?";
