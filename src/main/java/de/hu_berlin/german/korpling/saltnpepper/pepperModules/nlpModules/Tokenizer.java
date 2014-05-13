@@ -44,95 +44,86 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructu
 import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 /**
- * This class allows it to use the tokenizer of Salt via Pepper. It uses the java implementation of the 
- * TreeTagger tokenizer of Salt.
+ * This class allows it to use the tokenizer of Salt via Pepper. It uses the
+ * java implementation of the TreeTagger tokenizer of Salt.
+ * 
  * @author Florian Zipser
  * @version 1.0
- *
+ * 
  */
-@Component(name="TokenizerComponent", factory="PepperManipulatorComponentFactory")
-public class Tokenizer extends PepperManipulatorImpl 
-{
-	public Tokenizer()
-	{
+@Component(name = "TokenizerComponent", factory = "PepperManipulatorComponentFactory")
+public class Tokenizer extends PepperManipulatorImpl {
+	public Tokenizer() {
 		super();
 		this.setName("Tokenizer");
 		this.setProperties(new TokenizerProperties());
 	}
-	
+
 	/**
 	 * stores all abbreviations corresponding to their language
 	 */
-	private Map<LanguageCode, HashSet<String>> abbreviationMap= null; 
-	
+	private Map<LanguageCode, HashSet<String>> abbreviationMap = null;
+
 	/**
 	 * Checks abbreviation folder in case of t is set.
 	 */
 	@Override
-	public boolean isReadyToStart() throws PepperModuleNotReadyException
-	{
-		if (((TokenizerProperties)this.getProperties()).getAbbreviationFolder()!= null)
-		{
+	public boolean isReadyToStart() throws PepperModuleNotReadyException {
+		if (((TokenizerProperties) this.getProperties()).getAbbreviationFolder() != null) {
 			loadAbbFolder();
 		}
-		return(true);
+		return (true);
 	}
-	
+
 	/**
-	 * Checks abbreviation folder, if it contains abbreviation files (files with decoded language endings like *.de, *.en, etyc.)
+	 * Checks abbreviation folder, if it contains abbreviation files (files with
+	 * decoded language endings like *.de, *.en, etyc.)
 	 */
-	private void loadAbbFolder()
-	{
-		File abbFolder= ((TokenizerProperties)this.getProperties()).getAbbreviationFolder();
-		File[] abbFiles= abbFolder.listFiles();
-		if (abbFiles!= null)
-		{
-			for (File abbFile: abbFiles)
-			{//check if file ending is a ISO 639-2 code
-				String ending= FilenameUtils.getExtension(abbFile.getName());
-				LanguageCode langCode= LanguageCode.valueOf(ending);
-				if (langCode!= null)
-				{//file is abbreviation file, load it
-					if (abbreviationMap== null)
-						abbreviationMap= new ConcurrentHashMap<LanguageCode, HashSet<String>>();
-					HashSet<String> abbreviations= null;
-			    	try 
-			    	{
-			    		abbreviations= new HashSet<String>();
-			    		BufferedReader inReader;
+	private void loadAbbFolder() {
+		File abbFolder = ((TokenizerProperties) this.getProperties()).getAbbreviationFolder();
+		File[] abbFiles = abbFolder.listFiles();
+		if (abbFiles != null) {
+			for (File abbFile : abbFiles) {// check if file ending is a ISO
+											// 639-2 code
+				String ending = FilenameUtils.getExtension(abbFile.getName());
+				LanguageCode langCode = LanguageCode.valueOf(ending);
+				if (langCode != null) {// file is abbreviation file, load it
+					if (abbreviationMap == null)
+						abbreviationMap = new ConcurrentHashMap<LanguageCode, HashSet<String>>();
+					HashSet<String> abbreviations = null;
+					try {
+						abbreviations = new HashSet<String>();
+						BufferedReader inReader;
 						inReader = new BufferedReader(new InputStreamReader(new FileInputStream(abbFile.getAbsolutePath()), "UTF8"));
 						String input = "";
-						while((input = inReader.readLine()) != null)
-						{
-				           //putting
-				           abbreviations.add(input);
+						while ((input = inReader.readLine()) != null) {
+							// putting
+							abbreviations.add(input);
 						}
 						inReader.close();
-						
-			        } catch (FileNotFoundException e) 
-			        {
-						throw new PepperModuleException(this, "Cannot tokenize the given text, because the file for abbreviation '"+abbFile.getAbsolutePath()+"' was not found.");
-					} catch (IOException e) 
-					{
-						throw new PepperModuleException(this, "Cannot tokenize the given text, because can not read file '"+abbFile.getAbsolutePath()+"'.");
+
+					} catch (FileNotFoundException e) {
+						throw new PepperModuleException(this, "Cannot tokenize the given text, because the file for abbreviation '" + abbFile.getAbsolutePath() + "' was not found.");
+					} catch (IOException e) {
+						throw new PepperModuleException(this, "Cannot tokenize the given text, because can not read file '" + abbFile.getAbsolutePath() + "'.");
 					}
 					abbreviationMap.put(langCode, abbreviations);
-				}//file is abbreviation file, load it
+				}// file is abbreviation file, load it
 			}
 		}
 	}
-	
+
 	/**
-	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}.
-	 * {@inheritDoc PepperModule#createPepperMapper(SElementId)}
+	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}. {@inheritDoc
+	 * PepperModule#createPepperMapper(SElementId)}
 	 */
 	@Override
-	public PepperMapper createPepperMapper(SElementId sElementId){
-		TokenizerMapper mapper= new TokenizerMapper();
-		return(mapper);
+	public PepperMapper createPepperMapper(SElementId sElementId) {
+		TokenizerMapper mapper = new TokenizerMapper();
+		return (mapper);
 	}
-	
-	private class TokenizerMapper extends PepperMapperImpl{
+
+	private class TokenizerMapper extends PepperMapperImpl {
 		/**
 		 * {@inheritDoc PepperMapper#setSDocument(SDocument)}
 		 * 
@@ -140,26 +131,21 @@ public class Tokenizer extends PepperManipulatorImpl
 		 */
 		@Override
 		public DOCUMENT_STATUS mapSDocument() {
-			SDocumentGraph sDocGraph= getSDocument().getSDocumentGraph();
-			if(sDocGraph!= null)
-			{//if document contains a document graph
-				de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer tokenizer= sDocGraph.createTokenizer();
-				if (abbreviationMap!= null)
-				{
-					Set<LanguageCode> keys= abbreviationMap.keySet();
-					for (LanguageCode lang: keys)
-					{
+			SDocumentGraph sDocGraph = getSDocument().getSDocumentGraph();
+			if (sDocGraph != null) {// if document contains a document graph
+				de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer tokenizer = sDocGraph.createTokenizer();
+				if (abbreviationMap != null) {
+					Set<LanguageCode> keys = abbreviationMap.keySet();
+					for (LanguageCode lang : keys) {
 						tokenizer.addAbbreviation(lang, abbreviationMap.get(lang));
 					}
 				}
-				if (	(sDocGraph.getSTextualDSs()!= null)&&
-						(sDocGraph.getSTextualDSs().size()>0))
-				{
-					for (STextualDS sTextualDs: sDocGraph.getSTextualDSs())
+				if ((sDocGraph.getSTextualDSs() != null) && (sDocGraph.getSTextualDSs().size() > 0)) {
+					for (STextualDS sTextualDs : sDocGraph.getSTextualDSs())
 						tokenizer.tokenize(sTextualDs);
 				}
-			}//if document contains a document graph
-			return(DOCUMENT_STATUS.COMPLETED);
+			}// if document contains a document graph
+			return (DOCUMENT_STATUS.COMPLETED);
 		}
 	}
 }
