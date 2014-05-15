@@ -83,7 +83,8 @@ public class Sentencer extends PepperManipulatorImpl {
 		 */
 		@Override
 		public DOCUMENT_STATUS mapSDocument() {
-			if ((getSDocument().getSDocumentGraph() != null) && (getSDocument().getSDocumentGraph().getSTextualDSs().size() > 0)) {
+			if (	(getSDocument().getSDocumentGraph() != null) && 
+					(getSDocument().getSDocumentGraph().getSTextualDSs().size() > 0)) {
 				// if document contains a document graph
 				for (STextualDS textualDS : getSDocument().getSDocumentGraph().getSTextualDSs()) {
 					if ((textualDS.getSText() != null) && (!textualDS.getSText().isEmpty())) {
@@ -112,9 +113,11 @@ public class Sentencer extends PepperManipulatorImpl {
 									sequence.setSStart(startOfSentence);
 									sequence.setSEnd(i + 1);
 									EList<SToken> tokens = getSDocument().getSDocumentGraph().getSTokensBySequence(sequence);
-									getSDocument().getSDocumentGraph().createSSpan(tokens).createSAnnotation(null, "sentence", "sentence");
-									startOfSentence = i + 1;
-									word = new StringBuilder();
+									if (tokens!= null){
+										getSDocument().getSDocumentGraph().createSSpan(tokens).createSAnnotation(null, "sentence", "sentence");
+										startOfSentence = i + 1;
+										word = new StringBuilder();
+									}
 								}
 							}
 						}

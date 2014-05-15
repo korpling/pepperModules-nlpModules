@@ -51,7 +51,7 @@ public class SentenceMapperTest {
 		SToken t10= getFixture().getSDocument().getSDocumentGraph().createSToken(textualDS, 51, 55);
 		SToken t11= getFixture().getSDocument().getSDocumentGraph().createSToken(textualDS, 56, 62);
 		SToken t12= getFixture().getSDocument().getSDocumentGraph().createSToken(textualDS, 63, 68);
-		SToken t13= getFixture().getSDocument().getSDocumentGraph().createSToken(textualDS, 58, 69);
+		SToken t13= getFixture().getSDocument().getSDocumentGraph().createSToken(textualDS, 68, 69);
 		
 		getFixture().mapSDocument();
 		
