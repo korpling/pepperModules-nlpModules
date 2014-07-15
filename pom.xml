@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>pepperModules-nlpModules</artifactId>
   <name>${project.groupId}.${project.artifactId}</name>
-  <version>1.1.2</version>
+  <version>1.1.3-SNAPSHOT</version>
   <packaging>bundle</packaging>
   <distributionManagement>
     <repository>
@@ -40,8 +40,8 @@
   	<name>Humboldt Univerity of Berlin, INRIA</name>
   </organization>
   <scm>
-    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/nlpModules/tags/pepperModules-nlpModules-1.1.2</developerConnection>
-    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/nlpModules/tags/pepperModules-nlpModules-1.1.2</url>
+    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/nlpModules/trunk</developerConnection>
+    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/nlpModules/</url>
   </scm>
  
   <dependencies>
