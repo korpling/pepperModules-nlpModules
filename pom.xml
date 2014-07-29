@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>pepperModules-nlpModules</artifactId>
@@ -10,7 +10,6 @@
       <id>korpling</id>
       <name>korpling maven repo</name>
       <url>file:///srv/www/maven2/</url>
-      <!-- <url>scpexe://korpling.german.hu-berlin.de/srv/www/maven2/</url>-->
     </repository>
   </distributionManagement>
   <repositories>
@@ -28,53 +27,55 @@
   <description>This project provides an access to the tokenizer of Salt via pepper. This is a java implementation of the TreeTagger tokenizer. The tokenizer will tokenize all STetxualDS objects of each document and will create word-like SToken objects.</description>
   <url>https://korpling.german.hu-berlin.de/p/projects/peppermodules-nlpModules</url>
   <issueManagement>
-  	<system>Redmine</system>
-  	<url>https://korpling.german.hu-berlin.de/p/projects/peppermodules-nlpModules/issues</url>
+    <system>GitHub</system>
+    <url>https://github.com/korpling/pepperModules-nlpModules/issues</url>
   </issueManagement>
   <ciManagement>
-  	<system>Jenkins</system>
-  	<url>https://korpling.german.hu-berlin.de/jenkins/</url>
+    <system>Jenkins</system>
+    <url>https://korpling.german.hu-berlin.de/jenkins/</url>
   </ciManagement>
   <inceptionYear>2013</inceptionYear>
   <organization>
-  	<name>Humboldt Univerity of Berlin, INRIA</name>
+    <name>Humboldt Univerity of Berlin, INRIA</name>
   </organization>
   <scm>
-    <developerConnection>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/nlpModules/trunk</developerConnection>
-    <url>scm:svn:https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/nlpModules/</url>
+    <connection>scm:git:git://github.com/korpling/pepperModules-nlpModules.git</connection>
+    <developerConnection>scm:git:git@github.com:korpling/pepperModules-nlpModules.git</developerConnection>
+    <url>https://github.com/korpling/pepperModules-nlpModules</url>
   </scm>
- 
   <dependencies>
-   <dependency>
-	<groupId>commons-io</groupId>
-	<artifactId>commons-io</artifactId>
-	<version>2.4</version>
-</dependency>
-<!-- iso language codes -->
     <dependency>
-	  	<groupId>com.neovisionaries</groupId>
-	  	<artifactId>nv-i18n</artifactId>
-	  	<version>1.1</version>
-	</dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
+    <dependency>
+      <groupId>com.neovisionaries</groupId>
+      <artifactId>nv-i18n</artifactId>
+      <version>1.1</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
-      <!-- start: Plugin for automatic releasing -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <version>${maven-release-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>perform</goal>
+            </goals>
+            <configuration>
+              <pomFileName>pepperModules-nlpModules/pom.xml</pomFileName>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
-          <tagBase>
-           https://korpling.german.hu-berlin.de/svn/saltnpepper/PepperModules/nlpModules/tags/
-          </tagBase>
           <releaseProfiles>release</releaseProfiles>
           <goals>package assembly:single deploy</goals>
         </configuration>
       </plugin>
-      <!-- 	start: creation of bundle jar
-			This plugIn creates a META-INF folder if not present and adds the entries into the MANIFEST.MF file required for OSGi. It
-			also creates an OSGI-INF folder necessary for using service-components in OSGi.
-	  -->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -99,13 +100,10 @@
             <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
             <Service-Component>${allServiceComponents}</Service-Component>
             <Bundle-ClassPath>.,{maven-dependencies}, lib/commons-io-2.4.jar</Bundle-ClassPath>
-			<Include-Resource>{maven-resources}, LICENSE, NOTICE, lib/commons-io-2.4.jar=lib/commons-io-2.4.jar</Include-Resource>
+            <Include-Resource>{maven-resources}, LICENSE, NOTICE, lib/commons-io-2.4.jar=lib/commons-io-2.4.jar</Include-Resource>
           </instructions>
         </configuration>
       </plugin>
-      <!-- end: creation of bundle jar -->
-      
-      <!-- start: maven site plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -128,8 +126,6 @@
           </reportPlugins>
         </configuration>
       </plugin>
-      <!-- end: maven site plugin -->
-      <!-- start: of docbook plugin -->
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-maven-plugin</artifactId>
@@ -153,7 +149,6 @@
               <useSvg>true</useSvg>
               <useExtensions>true</useExtensions>
               <sectionAutolabel>true</sectionAutolabel>
-              <!-- font configuration -->
               <bodyFontFamily>DejaVu Serif</bodyFontFamily>
               <monospaceFontFamily>DejaVu Sans Mono</monospaceFontFamily>
               <titleFontFamily>DejaVu Sans</titleFontFamily>
@@ -229,8 +224,7 @@
               <useExtensions>true</useExtensions>
               <preProcess>
                 <copy todir="${project.build.directory}/manual/images">
-                  <fileset dir="${basedir}/src/main/docbkx/images">
-                  </fileset>
+                  <fileset dir="${basedir}/src/main/docbkx/images" />
                 </copy>
               </preProcess>
             </configuration>
@@ -240,9 +234,7 @@
         <configuration>
           <xincludeSupported>true</xincludeSupported>
         </configuration>
-                
       </plugin>
-      
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-fop-support</artifactId>
@@ -260,7 +252,6 @@
           </execution>
         </executions>
       </plugin>
-      
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <version>${maven-resources-plugin.version}</version>
@@ -278,12 +269,11 @@
                   <directory>${basedir}/src/main/docbkx/</directory>
                   <filtering>true</filtering>
                 </resource>
-              </resources>             
-            </configuration>            
+              </resources>
+            </configuration>
           </execution>
         </executions>
       </plugin>
-      <!-- end of docbook plugin -->
     </plugins>
   </build>
 </project>
