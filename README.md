@@ -58,7 +58,7 @@ and
 
 ```xml
 <manipulator name="Tokenizer" path="PATH_TO_CORPUS">
-  <property key="PROPERTY_NAME">PROPERTY_VALUE</key>
+  <property key="PROPERTY_NAME">PROPERTY_VALUE</property>
 </manipulator>
 ```
 
