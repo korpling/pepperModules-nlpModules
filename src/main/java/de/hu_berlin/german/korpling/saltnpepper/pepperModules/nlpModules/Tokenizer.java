@@ -23,7 +23,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -141,8 +143,13 @@ public class Tokenizer extends PepperManipulatorImpl {
 					}
 				}
 				if ((sDocGraph.getSTextualDSs() != null) && (sDocGraph.getSTextualDSs().size() > 0)) {
-					for (STextualDS sTextualDs : sDocGraph.getSTextualDSs())
+					List<STextualDS> texts= new ArrayList<STextualDS>();
+					for (STextualDS sTextualDs : sDocGraph.getSTextualDSs()){
+						texts.add(sTextualDs);
+					}
+					for (STextualDS sTextualDs: texts){
 						tokenizer.tokenize(sTextualDs);
+					}
 				}
 			}// if document contains a document graph
 			return (DOCUMENT_STATUS.COMPLETED);
