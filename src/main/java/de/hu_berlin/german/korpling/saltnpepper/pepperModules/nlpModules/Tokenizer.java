@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.FilenameUtils;
+import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
 import com.neovisionaries.i18n.LanguageCode;
@@ -58,6 +59,9 @@ public class Tokenizer extends PepperManipulatorImpl {
 	public Tokenizer() {
 		super();
 		this.setName("Tokenizer");
+		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
+		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-nlpModules"));
+		setDesc("The tokenizer tokenzizes a document using the tokenizer provided by Salt. The tokenizer uses abbreviation lists and is implemented along the Treetaggers tokenizer by Helmut Schmid (see: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/). ");
 		this.setProperties(new TokenizerProperties());
 	}
 
@@ -143,11 +147,11 @@ public class Tokenizer extends PepperManipulatorImpl {
 					}
 				}
 				if ((sDocGraph.getSTextualDSs() != null) && (sDocGraph.getSTextualDSs().size() > 0)) {
-					List<STextualDS> texts= new ArrayList<STextualDS>();
-					for (STextualDS sTextualDs : sDocGraph.getSTextualDSs()){
+					List<STextualDS> texts = new ArrayList<STextualDS>();
+					for (STextualDS sTextualDs : sDocGraph.getSTextualDSs()) {
 						texts.add(sTextualDs);
 					}
-					for (STextualDS sTextualDs: texts){
+					for (STextualDS sTextualDs : texts) {
 						tokenizer.tokenize(sTextualDs);
 					}
 				}

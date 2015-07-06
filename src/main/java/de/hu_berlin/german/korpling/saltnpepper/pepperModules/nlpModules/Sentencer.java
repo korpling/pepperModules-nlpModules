@@ -20,6 +20,7 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
 import com.neovisionaries.i18n.LanguageCode;
@@ -62,6 +63,9 @@ public class Sentencer extends PepperManipulatorImpl {
 	public Sentencer() {
 		super();
 		this.setName("Sentencer");
+		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
+		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-nlpModules"));
+		setDesc("The sentencer is a Pepper module to bundle tokens to sentences. Therefore it creates a {@link SSpan} object for each sentence and connects that sentence with a set of tokens, belonging to the sentence. A sentence is identified as being determined by punctuations ('.', '!' and * '?'). The sentencer uses the abbreviation lists of Salt to identify abbreviations. ");
 		this.setProperties(new TokenizerProperties());
 	}
 
@@ -83,8 +87,7 @@ public class Sentencer extends PepperManipulatorImpl {
 		 */
 		@Override
 		public DOCUMENT_STATUS mapSDocument() {
-			if (	(getSDocument().getSDocumentGraph() != null) && 
-					(getSDocument().getSDocumentGraph().getSTextualDSs().size() > 0)) {
+			if ((getSDocument().getSDocumentGraph() != null) && (getSDocument().getSDocumentGraph().getSTextualDSs().size() > 0)) {
 				// if document contains a document graph
 				for (STextualDS textualDS : getSDocument().getSDocumentGraph().getSTextualDSs()) {
 					if ((textualDS.getSText() != null) && (!textualDS.getSText().isEmpty())) {
@@ -113,7 +116,7 @@ public class Sentencer extends PepperManipulatorImpl {
 									sequence.setSStart(startOfSentence);
 									sequence.setSEnd(i + 1);
 									EList<SToken> tokens = getSDocument().getSDocumentGraph().getSTokensBySequence(sequence);
-									if (tokens!= null){
+									if (tokens != null) {
 										getSDocument().getSDocumentGraph().createSSpan(tokens).createSAnnotation(null, "sentence", "sentence");
 										startOfSentence = i + 1;
 										word = new StringBuilder();
