@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.tests;
+package org.corpus_tools.peppermodules.nlpModules.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,6 +24,8 @@ import java.io.File;
 import java.io.PrintWriter;
 
 import org.corpus_tools.pepper.testFramework.PepperManipulatorTest;
+import org.corpus_tools.peppermodules.nlpModules.Tokenizer;
+import org.corpus_tools.peppermodules.nlpModules.TokenizerProperties;
 import org.corpus_tools.salt.SaltFactory;
 import org.corpus_tools.salt.common.SCorpus;
 import org.corpus_tools.salt.common.SCorpusGraph;
@@ -32,9 +34,6 @@ import org.corpus_tools.salt.common.STextualDS;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.Tokenizer;
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.TokenizerProperties;
 
 public class TokenizerTest extends PepperManipulatorTest
 {	

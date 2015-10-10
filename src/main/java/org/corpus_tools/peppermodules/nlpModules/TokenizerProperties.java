@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules;
+package org.corpus_tools.peppermodules.nlpModules;
 
 import java.io.File;
 

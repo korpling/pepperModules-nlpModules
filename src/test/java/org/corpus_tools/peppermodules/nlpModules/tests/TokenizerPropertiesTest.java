@@ -15,7 +15,7 @@
  *
  *
  */
-package de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.tests;
+package org.corpus_tools.peppermodules.nlpModules.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,10 +23,9 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 
+import org.corpus_tools.peppermodules.nlpModules.TokenizerProperties;
 import org.junit.Before;
 import org.junit.Test;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.TokenizerProperties;
 
 public class TokenizerPropertiesTest{
 	
