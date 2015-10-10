@@ -21,7 +21,7 @@
   <parent>
     <groupId>de.hu_berlin.german.korpling.saltnpepper</groupId>
     <artifactId>pepper-parentModule</artifactId>
-	<version>2.1.2</version>
+	<version>3.0.0-SNAPSHOT</version>
   </parent>
   <description>This project provides an access to the tokenizer of Salt via pepper. This is a java implementation of the TreeTagger tokenizer. The tokenizer will tokenize all STetxualDS objects of each document and will create word-like SToken objects.</description>
   <url>https://korpling.german.hu-berlin.de/p/projects/peppermodules-nlpModules</url>

@@ -47,25 +47,25 @@ public class TokenizerPropertiesTest{
 	@Test
 	public void test_PROP_ABBREVIATION_FOLDER()
 	{
-		assertNull(this.getFixture().getAbbreviationFolder());
+		assertNull(getFixture().getAbbreviationFolder());
 		
 		String testFileName= "notExisting";
 		File testFile=new File(testFileName); 
 		
 		try {
-			this.getFixture().setPropertyValue(TokenizerProperties.PROP_ABBREVIATION_FOLDER, testFile);
+			getFixture().setPropertyValue(TokenizerProperties.PROP_ABBREVIATION_FOLDER, testFile);
 			fail("Should fail, because abbreviation folder does not exist");
 		} catch (Exception e) {
 		}
 		
 		
-		assertEquals(testFile, this.getFixture().getAbbreviationFolder());
+		assertEquals(testFile, getFixture().getAbbreviationFolder());
 		
 		testFileName= System.getProperty("java.io.tmpdir")+"/tokPropTestAbbFolder";
 		testFile=new File(testFileName); 
 		testFile.mkdirs();
 		
-		this.getFixture().setPropertyValue(TokenizerProperties.PROP_ABBREVIATION_FOLDER, testFile);
-		assertEquals(testFile, this.getFixture().getAbbreviationFolder());
+		getFixture().setPropertyValue(TokenizerProperties.PROP_ABBREVIATION_FOLDER, testFile);
+		assertEquals(testFile, getFixture().getAbbreviationFolder());
 	}
 }

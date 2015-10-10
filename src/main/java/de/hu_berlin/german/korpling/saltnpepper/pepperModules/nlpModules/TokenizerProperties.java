@@ -19,9 +19,9 @@ package de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules;
 
 import java.io.File;
 
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperties;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperModuleProperty;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
+import org.corpus_tools.pepper.modules.PepperModuleProperties;
+import org.corpus_tools.pepper.modules.PepperModuleProperty;
+import org.corpus_tools.pepper.modules.exceptions.PepperModuleException;
 
 /**
  * Defines the properties to be used for the {@link RSTImporter}.

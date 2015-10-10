@@ -17,22 +17,24 @@
  */
 package de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.PrintWriter;
 
+import org.corpus_tools.pepper.testFramework.PepperManipulatorTest;
+import org.corpus_tools.salt.SaltFactory;
+import org.corpus_tools.salt.common.SCorpus;
+import org.corpus_tools.salt.common.SCorpusGraph;
+import org.corpus_tools.salt.common.SDocument;
+import org.corpus_tools.salt.common.STextualDS;
 import org.eclipse.emf.common.util.URI;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.testFramework.PepperManipulatorTest;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.Tokenizer;
 import de.hu_berlin.german.korpling.saltnpepper.pepperModules.nlpModules.TokenizerProperties;
-import de.hu_berlin.german.korpling.saltnpepper.salt.SaltFactory;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpus;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SCorpusGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sCorpusStructure.SDocument;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
 
 public class TokenizerTest extends PepperManipulatorTest
 {	
@@ -44,11 +46,11 @@ public class TokenizerTest extends PepperManipulatorTest
 	{
 		super.setFixture(new Tokenizer());
 		
-		super.getFixture().setSaltProject(SaltFactory.eINSTANCE.createSaltProject());
+		super.getFixture().setSaltProject(SaltFactory.createSaltProject());
 		super.setResourcesURI(resourceURI);
 		
 		//setting temproraries and resources
-		this.getFixture().setResources(resourceURI);
+		getFixture().setResources(resourceURI);
 	}
 	
 	/**
@@ -57,29 +59,29 @@ public class TokenizerTest extends PepperManipulatorTest
 	@Test
 	public void testCase1()
 	{
-		SCorpusGraph importedSCorpusGraph= SaltFactory.eINSTANCE.createSCorpusGraph();
-		this.getFixture().getSaltProject().getSCorpusGraphs().add(importedSCorpusGraph);
+		SCorpusGraph importedSCorpusGraph= SaltFactory.createSCorpusGraph();
+		getFixture().getSaltProject().addCorpusGraph(importedSCorpusGraph);
 		
 		String sText="Is this example more complicated, than it is supposed to be?";
 		
-		SDocument sDoc1= SaltFactory.eINSTANCE.createSDocument();
-		sDoc1.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		sDoc1.getSDocumentGraph().createSTextualDS(sText);
+		SDocument sDoc1= SaltFactory.createSDocument();
+		sDoc1.setDocumentGraph(SaltFactory.createSDocumentGraph());
+		sDoc1.getDocumentGraph().createTextualDS(sText);
 		
-		SDocument sDoc2= SaltFactory.eINSTANCE.createSDocument();
-		sDoc2.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		sDoc2.getSDocumentGraph().createSTextualDS(sText);
+		SDocument sDoc2= SaltFactory.createSDocument();
+		sDoc2.setDocumentGraph(SaltFactory.createSDocumentGraph());
+		sDoc2.getDocumentGraph().createTextualDS(sText);
 		
-		SCorpus corp1= SaltFactory.eINSTANCE.createSCorpus();
-		importedSCorpusGraph.addSNode(corp1);
-		importedSCorpusGraph.addSDocument(corp1, sDoc1);
-		importedSCorpusGraph.addSDocument(corp1, sDoc2);
+		SCorpus corp1= SaltFactory.createSCorpus();
+		importedSCorpusGraph.addNode(corp1);
+		importedSCorpusGraph.addDocument(corp1, sDoc1);
+		importedSCorpusGraph.addDocument(corp1, sDoc2);
 		
 		//runs the PepperModule
 		this.start();
 		
-		assertNotNull(sDoc1.getSDocumentGraph().getSTokens());
-		assertEquals(13, sDoc1.getSDocumentGraph().getSTokens().size());
+		assertNotNull(sDoc1.getDocumentGraph().getTokens());
+		assertEquals(13, sDoc1.getDocumentGraph().getTokens().size());
 	}
 	
 	/**
@@ -88,25 +90,25 @@ public class TokenizerTest extends PepperManipulatorTest
 	@Test
 	public void testCase2()
 	{
-		SCorpusGraph importedSCorpusGraph= SaltFactory.eINSTANCE.createSCorpusGraph();
-		this.getFixture().getSaltProject().getSCorpusGraphs().add(importedSCorpusGraph);
+		SCorpusGraph importedSCorpusGraph= SaltFactory.createSCorpusGraph();
+		getFixture().getSaltProject().addCorpusGraph(importedSCorpusGraph);
 		
 		String sText="Is this example more complicated, than it is supposed to be?";
 		
-		SDocument sDoc1= SaltFactory.eINSTANCE.createSDocument();
-		sDoc1.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		sDoc1.getSDocumentGraph().createSTextualDS(sText);
-		sDoc1.getSDocumentGraph().createSTextualDS(sText);
+		SDocument sDoc1= SaltFactory.createSDocument();
+		sDoc1.setDocumentGraph(SaltFactory.createSDocumentGraph());
+		sDoc1.getDocumentGraph().createTextualDS(sText);
+		sDoc1.getDocumentGraph().createTextualDS(sText);
 		
-		SCorpus corp1= SaltFactory.eINSTANCE.createSCorpus();
-		importedSCorpusGraph.addSNode(corp1);
-		importedSCorpusGraph.addSDocument(corp1, sDoc1);
+		SCorpus corp1= SaltFactory.createSCorpus();
+		importedSCorpusGraph.addNode(corp1);
+		importedSCorpusGraph.addDocument(corp1, sDoc1);
 		
 		//runs the PepperModule
 		this.start();
 		
-		assertNotNull(sDoc1.getSDocumentGraph().getSTokens());
-		assertEquals(26, sDoc1.getSDocumentGraph().getSTokens().size());
+		assertNotNull(sDoc1.getDocumentGraph().getTokens());
+		assertEquals(26, sDoc1.getDocumentGraph().getTokens().size());
 	}
 	
 	/**
@@ -116,18 +118,18 @@ public class TokenizerTest extends PepperManipulatorTest
 	@Test
 	public void testCase3() throws Exception
 	{
-		SCorpusGraph importedSCorpusGraph= SaltFactory.eINSTANCE.createSCorpusGraph();
-		this.getFixture().getSaltProject().getSCorpusGraphs().add(importedSCorpusGraph);
+		SCorpusGraph importedSCorpusGraph= SaltFactory.createSCorpusGraph();
+		getFixture().getSaltProject().addCorpusGraph(importedSCorpusGraph);
 		
 		String sText="Is this. example more complicated, than. it is supposed to be?";
 		
-		SDocument sDoc1= SaltFactory.eINSTANCE.createSDocument();
-		sDoc1.setSDocumentGraph(SaltFactory.eINSTANCE.createSDocumentGraph());
-		sDoc1.getSDocumentGraph().createSTextualDS(sText);
+		SDocument sDoc1= SaltFactory.createSDocument();
+		sDoc1.setDocumentGraph(SaltFactory.createSDocumentGraph());
+		sDoc1.getDocumentGraph().createTextualDS(sText);
 		
-		SCorpus corp1= SaltFactory.eINSTANCE.createSCorpus();
-		importedSCorpusGraph.addSNode(corp1);
-		importedSCorpusGraph.addSDocument(corp1, sDoc1);
+		SCorpus corp1= SaltFactory.createSCorpus();
+		importedSCorpusGraph.addNode(corp1);
+		importedSCorpusGraph.addDocument(corp1, sDoc1);
 		
 		String abbFolderName= System.getProperty("java.io.tmpdir")+"/abbreviations";
 		File abbFolder= new File(abbFolderName);
@@ -149,12 +151,12 @@ public class TokenizerTest extends PepperManipulatorTest
 			writer.close();
 		}
 		
-		this.getFixture().getProperties().setPropertyValue(TokenizerProperties.PROP_ABBREVIATION_FOLDER, abbFolder);
+		getFixture().getProperties().setPropertyValue(TokenizerProperties.PROP_ABBREVIATION_FOLDER, abbFolder);
 		
 		//runs the PepperModule
 		this.start();
 		
-		assertNotNull(sDoc1.getSDocumentGraph().getSTokens());
-		assertEquals(13, sDoc1.getSDocumentGraph().getSTokens().size());
+		assertNotNull(sDoc1.getDocumentGraph().getTokens());
+		assertEquals(13, sDoc1.getDocumentGraph().getTokens().size());
 	}
 }

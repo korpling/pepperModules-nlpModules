@@ -31,20 +31,20 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.io.FilenameUtils;
+import org.corpus_tools.pepper.common.DOCUMENT_STATUS;
+import org.corpus_tools.pepper.common.PepperConfiguration;
+import org.corpus_tools.pepper.impl.PepperManipulatorImpl;
+import org.corpus_tools.pepper.impl.PepperMapperImpl;
+import org.corpus_tools.pepper.modules.PepperMapper;
+import org.corpus_tools.pepper.modules.exceptions.PepperModuleException;
+import org.corpus_tools.pepper.modules.exceptions.PepperModuleNotReadyException;
+import org.corpus_tools.salt.common.SDocumentGraph;
+import org.corpus_tools.salt.common.STextualDS;
+import org.corpus_tools.salt.graph.Identifier;
 import org.eclipse.emf.common.util.URI;
 import org.osgi.service.component.annotations.Component;
 
 import com.neovisionaries.i18n.LanguageCode;
-
-import de.hu_berlin.german.korpling.saltnpepper.pepper.common.DOCUMENT_STATUS;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.PepperMapper;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.exceptions.PepperModuleNotReadyException;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperManipulatorImpl;
-import de.hu_berlin.german.korpling.saltnpepper.pepper.modules.impl.PepperMapperImpl;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.SDocumentGraph;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.STextualDS;
-import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 
 /**
  * This class allows it to use the tokenizer of Salt via Pepper. It uses the
@@ -58,11 +58,11 @@ import de.hu_berlin.german.korpling.saltnpepper.salt.saltCore.SElementId;
 public class Tokenizer extends PepperManipulatorImpl {
 	public Tokenizer() {
 		super();
-		this.setName("Tokenizer");
-		setSupplierContact(URI.createURI("saltnpepper@lists.hu-berlin.de"));
+		setName("Tokenizer");
+		setSupplierContact(URI.createURI(PepperConfiguration.EMAIL));
 		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-nlpModules"));
 		setDesc("The tokenizer tokenzizes a document using the tokenizer provided by Salt. The tokenizer uses abbreviation lists and is implemented along the Treetaggers tokenizer by Helmut Schmid (see: http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/). ");
-		this.setProperties(new TokenizerProperties());
+		setProperties(new TokenizerProperties());
 	}
 
 	/**
@@ -121,34 +121,34 @@ public class Tokenizer extends PepperManipulatorImpl {
 
 	/**
 	 * Creates a mapper of type {@link EXMARaLDA2SaltMapper}. {@inheritDoc
-	 * PepperModule#createPepperMapper(SElementId)}
+	 * PepperModule#createPepperMapper(Identifier)}
 	 */
 	@Override
-	public PepperMapper createPepperMapper(SElementId sElementId) {
+	public PepperMapper createPepperMapper(Identifier sElementId) {
 		TokenizerMapper mapper = new TokenizerMapper();
 		return (mapper);
 	}
 
 	private class TokenizerMapper extends PepperMapperImpl {
 		/**
-		 * {@inheritDoc PepperMapper#setSDocument(SDocument)}
+		 * {@inheritDoc PepperMapper#setDocument(SDocument)}
 		 * 
 		 * OVERRIDE THIS METHOD FOR CUSTOMIZED MAPPING.
 		 */
 		@Override
 		public DOCUMENT_STATUS mapSDocument() {
-			SDocumentGraph sDocGraph = getSDocument().getSDocumentGraph();
+			SDocumentGraph sDocGraph = getDocument().getDocumentGraph();
 			if (sDocGraph != null) {// if document contains a document graph
-				de.hu_berlin.german.korpling.saltnpepper.salt.saltCommon.sDocumentStructure.tokenizer.Tokenizer tokenizer = sDocGraph.createTokenizer();
+				org.corpus_tools.salt.common.tokenizer.Tokenizer tokenizer = sDocGraph.createTokenizer();
 				if (abbreviationMap != null) {
 					Set<LanguageCode> keys = abbreviationMap.keySet();
 					for (LanguageCode lang : keys) {
 						tokenizer.addAbbreviation(lang, abbreviationMap.get(lang));
 					}
 				}
-				if ((sDocGraph.getSTextualDSs() != null) && (sDocGraph.getSTextualDSs().size() > 0)) {
+				if ((sDocGraph.getTextualDSs() != null) && (sDocGraph.getTextualDSs().size() > 0)) {
 					List<STextualDS> texts = new ArrayList<STextualDS>();
-					for (STextualDS sTextualDs : sDocGraph.getSTextualDSs()) {
+					for (STextualDS sTextualDs : sDocGraph.getTextualDSs()) {
 						texts.add(sTextualDs);
 					}
 					for (STextualDS sTextualDs : texts) {
