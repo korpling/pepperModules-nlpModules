@@ -75,23 +75,21 @@ public class SentenceMapperTest {
 		SSpan span1= getFixture().getDocument().getDocumentGraph().getSpans().get(0);
 		SSpan span2= getFixture().getDocument().getDocumentGraph().getSpans().get(1);
 		SSpan span3= getFixture().getDocument().getDocumentGraph().getSpans().get(2);
-		List<SALT_TYPE> relType= new ArrayList<SALT_TYPE>();
-		relType.add(SALT_TYPE.STEXT_OVERLAPPING_RELATION);
 		List<SToken> tokens= null;
 		
-		tokens= getFixture().getDocument().getDocumentGraph().getOverlappedTokens(span1, relType);
+		tokens= getFixture().getDocument().getDocumentGraph().getOverlappedTokens(span1);
 		assertTrue(tokens.contains(t1));
 		assertTrue(tokens.contains(t2));
 		assertTrue(tokens.contains(t3));
 		assertTrue(tokens.contains(t4));
 		
-		tokens= getFixture().getDocument().getDocumentGraph().getOverlappedTokens(span2, relType);
+		tokens= getFixture().getDocument().getDocumentGraph().getOverlappedTokens(span2);
 		assertTrue(tokens.contains(t5));
 		assertTrue(tokens.contains(t6));
 		assertTrue(tokens.contains(t7));
 		assertTrue(tokens.contains(t8));
 		
-		tokens= getFixture().getDocument().getDocumentGraph().getOverlappedTokens(span3, relType);
+		tokens= getFixture().getDocument().getDocumentGraph().getOverlappedTokens(span3);
 		assertTrue(tokens.contains(t9));
 		assertTrue(tokens.contains(t10));
 		assertTrue(tokens.contains(t11));
