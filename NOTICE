@@ -19,6 +19,7 @@ inside the folders plugins or lib.
 
 This project includes:
   Apache Commons Lang under Apache License, Version 2.0
+  Apache openNLP English dictionary under Apache License, Version 2.0
   AssertJ fluent assertions under Apache License, Version 2.0
   carrot-osgi-anno-scr-core under The BSD License
   carrot-osgi-anno-scr-make under The BSD License

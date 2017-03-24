@@ -1,6 +1,6 @@
 ![SaltNPepper project](./gh-site/img/SaltNPepper_logo2010.png)
 # NLPModules
-This project provides a tokenizer and a sentencer for the linguistic converter framework Pepper (see https://u.hu-berlin.de/saltnpepper). A detailed description of the tokenizer can be found in [Tokenizer](#details) and for the sentencer can be found in [Sentencer](#details2).
+This project provides a tokenizer, a lemmatizer and a sentencer for the linguistic converter framework Pepper (see https://u.hu-berlin.de/saltnpepper). A detailed description of the tokenizer can be found in [Tokenizer](#details), for the sentencer see [Sentencer](#details2), and for the lemmatizer see [Lemmatizer](#details3).
 
 Pepper is a pluggable framework to convert a variety of linguistic formats (like [TigerXML](http://www.ims.uni-stuttgart.de/forschung/ressourcen/werkzeuge/TIGERSearch/doc/html/TigerXML.html), the [EXMARaLDA format](http://www.exmaralda.org/), [PAULA](http://www.sfb632.uni-potsdam.de/paula.html) etc.) into each other. Furthermore Pepper uses Salt (see https://github.com/korpling/salt), the graph-based meta model for linguistic data, which acts as an intermediate model to reduce the number of mappings to be implemented. That means converting data from a format _A_ to format _B_ consists of two steps. First the data is mapped from format _A_ to Salt and second from Salt to format _B_. This detour reduces the number of Pepper modules from _n<sup>2</sup>-n_ (in the case of a direct mapping) to _2n_ to handle a number of n formats.
 
@@ -45,19 +45,25 @@ A detailed description of the Pepper workflow can be found on the [Pepper projec
 ### a) Identify the module by name
 
 ```xml
-<manipulator name="Tokenizer" path="PATH_TO_CORPUS"/>
+<manipulator name="Tokenizer"/>
 ```
 
 and
 
 ```xml
-<manipulator name="Sentencer" path="PATH_TO_CORPUS"/>
+<manipulator name="Sentencer"/>
+```
+
+and
+
+```xml
+<manipulator name="Lemmatizer"/>
 ```
 
 ### b) Use properties
 
 ```xml
-<manipulator name="Tokenizer" path="PATH_TO_CORPUS">
+<manipulator name="Tokenizer">
   <property key="PROPERTY_NAME">PROPERTY_VALUE</property>
 </manipulator>
 ```
@@ -67,10 +73,10 @@ Since this Pepper module is under a free license, please feel free to fork it fr
 If you have found any bugs, or have some feature request, please open an issue on github. If you need any help, please write an e-mail to saltnpepper@lists.hu-berlin.de .
 
 ## Funders
-This project has been funded by the [department of corpus linguistics and morphology](https://www.linguistik.hu-berlin.de/institut/professuren/korpuslinguistik/) of the Humboldt-Universität zu Berlin, the Institut national de recherche en informatique et en automatique ([INRIA](www.inria.fr/en/)) and the [Sonderforschungsbereich 632](https://www.sfb632.uni-potsdam.de/en/). 
+This project has been funded by the [department of corpus linguistics and morphology](https://www.linguistik.hu-berlin.de/institut/professuren/korpuslinguistik/) of the Humboldt-Universität zu Berlin, the Institut national de recherche en informatique et en automatique ([INRIA](www.inria.fr/en/)) and the [Sonderforschungsbereich 632](https://www.sfb632.uni-potsdam.de/en/) and the Department of Linguistics at Georgetown University.
 
 ## License
-  Copyright 2009 Humboldt-Universität zu Berlin, INRIA.
+  Copyright 2009-2017 Humboldt-Universität zu Berlin, INRIA and Georgetown University
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -132,3 +138,72 @@ abbreviation.en
 abbreviation.fr
 abbreviation.it
 ```
+
+# <a name="details3">Lemmatizer</a>
+The lemmatizer adds lemmas to all STokens based on a lemma list, optionally also containing instructions per POS tag (for example the lemma can be different for
+bit as a verb -> bite, vs. bit as a noun -> bit). No stochastic disambiguation is done - lemmatization is purely look-up based. A built in lemma list is provided for English, but
+a file with lemmas per word and potentially POS tag can be provided in the following tab delimited format, one word per line:
+
+
+```
+bit	NN	bit
+bit	VBD	bite
+grew	VBD	grow
+oxen	NNS	ox
+```
+
+or:
+
+```
+bit	bit
+grew	grow
+oxen	ox
+```
+
+Note that there is nothing preventing the use of this module for purposes other than lemmatization. It can add any annotation to tokens, based on word form look up, 
+optionally cross-referenced with one other token annotation. Names for the checked and added annotations are configurable, and the module can be used multiple times
+to add several annotations. 
+
+If you have useful lemma lists for some language that can be made available, please consider contributing them to the project.
+
+## Properties
+
+The table  contains an overview of all usable properties to customize the behaviour of this pepper module. The following section contains a close description to each single property and describes the resulting differences in the mapping to the salt model.
+
+|Name of property             |	Type of property  | optional/ mandatory	| default value |
+|-----------------------------|-------------------|---------------------|---------------|
+|lemmatizer.posAnno | string	      | optional  | pos            |
+|lemmatizer.noLower | boolean	      | optional  | FALSE            |
+|lemmatizer.allowUnknown | boolean	      | optional  | FALSE            |
+|lemmatizer.makeUnknownLower | boolean	      | optional  | FALSE            |
+|lemmatizer.unknownString | string	      | optional  | --            |
+|lemmatizer.lemmaName | string	      | optional  | lemma            |
+|lemmatizer.lemmaNamespace | string	      | optional  | default_ns            |
+|lemmatizer.lexiconFile | file path	      | optional  | --            |
+
+### lemmatizer.posAnno
+Name of a part of speech annotation to check (default: pos).
+
+### lemmatizer.noLower
+Normally lower cased forms are searched if exact match is not found, set noLower to TRUE to override (default: FALSE).
+
+### lemmatizer.allowUnknown
+If no lemma is found, the token's string will be used instead, set noUnknown to FALSE to use the unknownString value instead (default: FALSE).
+
+### lemmatizer.makeUnknownLower
+Optionally, when using the token string instead of an unknown lemma, the value can be lower cased (default: FALSE).
+
+### lemmatizer.unknownString
+Specifies a string to use for all unknown lemmas.
+
+### lemmatizer.lemmaName
+Specifies the name of the lemma annotation (default: lemma).
+
+### lemmatizer.lemmaNamespace
+Specifies the namespace for the lemma annotation (default: default_ns).
+
+### lemmatizer.lexiconFile
+Optional path to a file containing the lemma lexicon, if not using a built-in lexicon. You may use absolute paths; use forward slashes for both Windows and *NIX, e.g.:
+
+`<property key="lemmatizer.lexiconFile">C:/Users/J/Desktop/lemma_list.tab</property>`
+
