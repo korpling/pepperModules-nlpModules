@@ -482,11 +482,7 @@ public class Tokenizer {
 						retVal.add(sTok);
 						i = i + strTokens.get(tokenCntr).length() - 1;
 						tokenCntr++;
-						if (tokenCntr >= strTokens.size()) {
-							break;
-						}
-
-						/**
+            /**
 						 * check, if there is an old token, overlapping the same
 						 * or a bigger span as the currently created one. If
 						 * yes, remove the old one and create a span overlapping
@@ -498,7 +494,10 @@ public class Tokenizer {
 								old2newToken.put(oldToken, sTok);
 							}
 						}
-
+            
+						if (tokenCntr >= strTokens.size()) {
+							break;
+						}
 					} // pattern found
 				} // first letter matches
 			}
