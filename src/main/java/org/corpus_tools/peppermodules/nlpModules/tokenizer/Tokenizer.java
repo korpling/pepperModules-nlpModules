@@ -52,6 +52,7 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 import com.neovisionaries.i18n.LanguageCode;
+import org.corpus_tools.salt.common.SMedialRelation;
 
 /**
  * The general task of this class is to tokenize a given text in the same order
@@ -507,6 +508,8 @@ public class Tokenizer {
 					// create span for oldToken
 					List<SToken> overlappedTokens = new ArrayList<SToken>(old2newToken.get(oldToken));
 					if (overlappedTokens.size() == 1) {
+            // Tokenizing created the same token as before, just leave the old token (with all annotations and relations)
+            // in the graph, but remove the newly created token.
 						getDocumentGraph().removeNode(overlappedTokens.get(0));
 					} else {
 
@@ -543,7 +546,34 @@ public class Tokenizer {
 						}
 						List<SRelation<SNode, SNode>> outRels = new ArrayList<>();
 						for (SRelation outRel : getDocumentGraph().getOutRelations(oldToken.getId())) {
-							if (!(outRel instanceof STextualRelation)) {
+							if(outRel instanceof SMedialRelation) {
+                SMedialRelation mediaRel = (SMedialRelation) outRel;
+                // Don't copy the media relation, but use an interpolation based on the text length to add media
+                // relations to the new tokens. Overlapped tokens should be sorted by their text order.
+                final double oldMediaLength = mediaRel.getEnd() - mediaRel.getStart();
+                
+                double oldTextLength = (double) getDocumentGraph().getText(oldToken).length();
+                if(oldTextLength == 0.0) {
+                  // avoid division by zero
+                  oldTextLength = 0.00001;
+                }
+                
+                double currentStart = mediaRel.getStart();
+                for(SToken tok : overlappedTokens) {
+                  double newTokTextLength = (double) getDocumentGraph().getText(tok).length();
+                  double newTokMediaLength = (newTokTextLength / oldTextLength) * oldMediaLength;
+
+                  SMedialRelation newTokMediaRel = SaltFactory.createSMedialRelation();
+                  newTokMediaRel.setSource(tok);
+                  newTokMediaRel.setTarget(mediaRel.getTarget());
+                  newTokMediaRel.setStart(currentStart);
+                  newTokMediaRel.setEnd(currentStart + newTokMediaLength);
+
+                  getDocumentGraph().addRelation(newTokMediaRel);
+
+                  currentStart = currentStart + newTokMediaLength;
+                }
+              } else if (!(outRel instanceof STextualRelation)) {
 								outRels.add(outRel);
 							}
 						}
