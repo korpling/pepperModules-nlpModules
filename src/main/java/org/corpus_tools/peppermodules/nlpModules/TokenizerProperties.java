@@ -37,6 +37,7 @@ public class TokenizerProperties extends PepperModuleProperties {
 	 * treetagger.
 	 */
 	public final static String PROP_ABBREVIATION_FOLDER = PREFIX + "abbreviationFolder";
+  public final static String PROP_ADD_TEXT_TO_SPAN = PREFIX + "addTextToSpan";
 
 	public boolean checkProperty(PepperModuleProperty<?> prop) {
 		super.checkProperty(prop);
@@ -53,7 +54,8 @@ public class TokenizerProperties extends PepperModuleProperties {
 	}
 
 	public TokenizerProperties() {
-		this.addProperty(new PepperModuleProperty<File>(PROP_ABBREVIATION_FOLDER, File.class, "Since the TreeTagger tokenizer produces better results, when it knows about abbreviations used in the text corresponding to the language of the text, it is possible to feed the Tokenizer module with lists of abbreviations.", null, false));
+		this.addProperty(new PepperModuleProperty<>(PROP_ABBREVIATION_FOLDER, File.class, "Since the TreeTagger tokenizer produces better results, when it knows about abbreviations used in the text corresponding to the language of the text, it is possible to feed the Tokenizer module with lists of abbreviations.", null, false));
+    this.addProperty(new PepperModuleProperty<>(PROP_ADD_TEXT_TO_SPAN, Boolean.class, "For existing tokens, add the original text as annotation to the newly created span", false, false));
 	}
 
 	/**
@@ -68,4 +70,13 @@ public class TokenizerProperties extends PepperModuleProperties {
 		File abbFolder = ((File) this.getProperty(PROP_ABBREVIATION_FOLDER).getValue());
 		return (abbFolder);
 	}
+  
+  public boolean getAddTextToSpan() {
+      Boolean b = (Boolean) this.getProperty(PROP_ADD_TEXT_TO_SPAN).getValue();
+      if(b != null) {
+        return b;
+      } else {
+        return false;
+      }
+  }
 }

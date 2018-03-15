@@ -146,6 +146,7 @@ public class Tokenizer extends PepperManipulatorImpl {
           = new org.corpus_tools.peppermodules.nlpModules.tokenizer.Tokenizer();
 
         tokenizer.setsDocumentGraph(sDocGraph);
+        tokenizer.setAddTextToSpan(((TokenizerProperties) this.getProperties()).getAddTextToSpan());
 
         if (abbreviationMap != null) {
           Set<LanguageCode> keys = abbreviationMap.keySet();

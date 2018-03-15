@@ -78,6 +78,8 @@ public class Tokenizer {
 	 */
 	private SDocumentGraph documentGraph = null;
 
+  private boolean addTextToSpan = false;
+  
 	public void setsDocumentGraph(SDocumentGraph sDocumentGraph) {
 		this.documentGraph = sDocumentGraph;
 	}
@@ -92,6 +94,14 @@ public class Tokenizer {
 	public Tokenizer() {
 	}
 
+  public void setAddTextToSpan(boolean addTextToSpan) {
+    this.addTextToSpan = addTextToSpan;
+  }
+
+  public boolean isAddTextToSpan() {
+    return addTextToSpan;
+  }
+  
 	/**
 	 * Sets the {@link STextualDS} to be tokenized. Its language will be
 	 * detected automatically if possible.
@@ -514,6 +524,12 @@ public class Tokenizer {
 					} else {
 
 						SSpan span = getDocumentGraph().createSpan(overlappedTokens);
+            
+            if(this.addTextToSpan) {
+              // use a guarantueed unique identifier as namespace and the original text name as name
+              String name = sTextualDS.getName() == null ? "orig_tok" : sTextualDS.getName();
+              span.createAnnotation(sTextualDS.getPath().fragment(), name, getDocumentGraph().getText(oldToken));
+            }
 
 						// move all annotations from old token to span
 						for (SAnnotation sAnno : oldToken.getAnnotations()) {
