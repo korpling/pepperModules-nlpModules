@@ -552,18 +552,22 @@ public class Tokenizer {
                 // relations to the new tokens. Overlapped tokens should be sorted by their text order.
                 final double oldMediaLength = mediaRel.getEnd() - mediaRel.getStart();
                 
-                double oldTextLength = (double) getDocumentGraph().getText(oldToken).length();
-                if(oldTextLength == 0.0) {
-                  // avoid division by zero
-                  oldTextLength = 0.00001;
-                }
-                
                 double currentStart = mediaRel.getStart();
+                
+                // get text length of all new nodes: tokenization can remove characters
+                double newTextLength = 0.0;
+                for(SToken tok : overlappedTokens) {
+                  newTextLength += (double) getDocumentGraph().getText(tok).length();
+                }
+                 if(newTextLength == 0.0) {
+                  // avoid division by zero
+                  newTextLength = 0.00001;
+                }
                 
                 for(int i=0; i < overlappedTokens.size(); i++) {
                   SToken tok = overlappedTokens.get(i);
                   double newTokTextLength = (double) getDocumentGraph().getText(tok).length();
-                  double newTokMediaLength = (newTokTextLength / oldTextLength) * oldMediaLength;
+                  double newTokMediaLength = (newTokTextLength / newTextLength) * oldMediaLength;
 
                   SMedialRelation newTokMediaRel = SaltFactory.createSMedialRelation();
                   newTokMediaRel.setSource(tok);
