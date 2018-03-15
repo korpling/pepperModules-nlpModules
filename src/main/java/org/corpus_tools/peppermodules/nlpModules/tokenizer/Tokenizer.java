@@ -506,7 +506,7 @@ public class Tokenizer {
 			if (old2newToken != null) {
 				for (SToken oldToken : old2newToken.keySet()) {
 					// create span for oldToken
-					List<SToken> overlappedTokens = new ArrayList<SToken>(old2newToken.get(oldToken));
+					ArrayList<SToken> overlappedTokens = new ArrayList<>(old2newToken.get(oldToken));
 					if (overlappedTokens.size() == 1) {
             // Tokenizing created the same token as before, just leave the old token (with all annotations and relations)
             // in the graph, but remove the newly created token.
@@ -559,7 +559,9 @@ public class Tokenizer {
                 }
                 
                 double currentStart = mediaRel.getStart();
-                for(SToken tok : overlappedTokens) {
+                
+                for(int i=0; i < overlappedTokens.size(); i++) {
+                  SToken tok = overlappedTokens.get(i);
                   double newTokTextLength = (double) getDocumentGraph().getText(tok).length();
                   double newTokMediaLength = (newTokTextLength / oldTextLength) * oldMediaLength;
 
@@ -567,8 +569,12 @@ public class Tokenizer {
                   newTokMediaRel.setSource(tok);
                   newTokMediaRel.setTarget(mediaRel.getTarget());
                   newTokMediaRel.setStart(currentStart);
-                  newTokMediaRel.setEnd(currentStart + newTokMediaLength);
-
+                  if(i < overlappedTokens.size()-1) {
+                   newTokMediaRel.setEnd(currentStart + newTokMediaLength);
+                  } else {
+                    // assign all remaining time to the lasts token to avoid any missing time due to fractions
+                    newTokMediaRel.setEnd(mediaRel.getEnd());
+                  }
                   getDocumentGraph().addRelation(newTokMediaRel);
 
                   currentStart = currentStart + newTokMediaLength;
