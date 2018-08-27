@@ -49,8 +49,8 @@ import org.corpus_tools.salt.core.SAnnotation;
 
 /**
  * The Lemmatizer is a Pepper module to add lemmas to tokens. Therefore it
- * creates an {@link SAnnotation} object for each token and adds
- * it to that token. <br/>
+ * creates an {@link SAnnotation} object for each token and adds it to that
+ * token. <br/>
  * 
  * @author Amir Zeldes
  * @version 1.0
@@ -68,169 +68,168 @@ public class Lemmatizer extends PepperManipulatorImpl {
 	}
 
 	/**
-	 * Creates a mapper. {@inheritDoc
-	 * PepperModule#createPepperMapper(Identifier)}
+	 * Creates a mapper. {@inheritDoc PepperModule#createPepperMapper(Identifier)}
 	 */
 	@Override
 	public PepperMapper createPepperMapper(Identifier sElementId) {
 		LemmaMapper mapper = new LemmaMapper();
-                
-                
+
 		return (mapper);
 	}
 
 	public static class LemmaMapper extends PepperMapperImpl {
-            
-            private HashMap<String, String> wordPos2Lemma;
-            private boolean userLexicon = false;
-            
-            @Override
-            protected void initialize(){
 
-                InputStream is = null;
-                
-                // Load lexicon
-                is = getClass().getResourceAsStream("/en-lemmatizer.dict.txt");                
-                
-                InputStreamReader isr = new InputStreamReader(is);
+		private HashMap<String, String> wordPos2Lemma;
+		private boolean userLexicon = false;
 
-                this.wordPos2Lemma = getLexicon(isr);
+		@Override
+		protected void initialize() {
 
-                    
-            } 
-                        
-                        
-            /**
-             * {@inheritDoc PepperMapper#setDocument(SDocument)}
-             * 
-             */
-            @Override
-            public DOCUMENT_STATUS mapSDocument() {
+			InputStream is = null;
 
-                    String lang = "en";  // TODO: setup multiple languages with built-in lemmatizer lexicon files
-                    String posAnno = (String) getProperties().getProperties().getOrDefault(LemmatizerProperties.POS_ANNO, "pos");
-                    boolean noLower = Boolean.valueOf(getProperties().getProperties().getProperty(LemmatizerProperties.NO_LOWER)); 
-                    boolean allowUnknown = Boolean.valueOf(getProperties().getProperties().getProperty(LemmatizerProperties.ALLOW_UNKNOWN));
-                    boolean makeUnknownLower = Boolean.valueOf(getProperties().getProperties().getProperty(LemmatizerProperties.MAKE_UNKNOWN_LOWER)); 
-                    String unknownString = (String) getProperties().getProperties().getOrDefault(LemmatizerProperties.UNKNOWN_STRING, null);
-                    String lemmaName = (String) getProperties().getProperties().getOrDefault(LemmatizerProperties.LEMMA_NAME, "lemma");
-                    String lemmaNamespace = (String) getProperties().getProperties().getOrDefault(LemmatizerProperties.LEMMA_NAMESPACE, "default_ns");
-                    
-                    SDocumentGraph graph = getDocument().getDocumentGraph();
+			// Load lexicon
+			is = getClass().getResourceAsStream("/en-lemmatizer.dict.txt");
 
-                    // check for user defined lexicon path
-                    String lexiconFile = (String) getProperties().getProperties().getOrDefault(LemmatizerProperties.LEXICON_FILE, null);
-                    
-                    if (lexiconFile != null){
-                        if (!this.userLexicon) { // user-defined lexicon has not been loaded yet
-                            InputStream is;
-                            try {
-                                 is = new FileInputStream(lexiconFile);
+			InputStreamReader isr = new InputStreamReader(is);
 
-                                } catch (FileNotFoundException e) {
-                                    throw new PepperModuleDataException(this,"Lexicon file not found: " + lexiconFile);
-                                }
-                            InputStreamReader isr = new InputStreamReader(is);                     
-                            this.wordPos2Lemma = getLexicon(isr);
-                            this.userLexicon = true;
-                        }
+			this.wordPos2Lemma = getLexicon(isr);
 
-                    }
-                    
-                    if ((getDocument().getDocumentGraph() != null) && (graph.getTextualDSs().size() > 0)) {
-                        // if document contains a document graph
-                        List<SToken> tokens = getDocument().getDocumentGraph().getTokens();
-                        for (SToken tok : tokens){
-                            // Check if the token has a pos annotation
-                            String pos = null;
-                            Set<SAnnotation> tok_annos = tok.getAnnotations();
-                            for (SAnnotation anno : tok_annos){
-                                if (posAnno.equals(anno.getName())){
-                                    pos = anno.getValue_STEXT();
-                                }
-                            }
-                            String word = "";
-                            word = graph.getText(tok);
-                            String lemma = null;
-                            if (pos != null){
-                                if (this.wordPos2Lemma.containsKey(word + "\t" + pos)){
-                                     lemma = wordPos2Lemma.get(word + "\t" + pos);
-                                } else if ((!noLower) && this.wordPos2Lemma.containsKey(word.toLowerCase() + "\t" + pos)){
-                                     lemma = wordPos2Lemma.get(word.toLowerCase() + "\t" + pos);
-                                }
-                            }
-                            if (lemma == null){
-                                if (this.wordPos2Lemma.containsKey(word)){
-                                     lemma = wordPos2Lemma.get(word);
-                                } else if ((!noLower) && this.wordPos2Lemma.containsKey(word.toLowerCase())){
-                                     lemma = wordPos2Lemma.get(word.toLowerCase());
-                                }
-                            }
-                            if (lemma == null && !allowUnknown && !makeUnknownLower){
-                                lemma = word;
-                            } else if (lemma == null && !allowUnknown){
-                                lemma = word.toLowerCase();
-                            }
-                            if (unknownString != null) {
-                                lemma = unknownString;
-                            }
-                            if (lemma != null){
-                                SAnnotation lemmaAnno = SaltFactory.createSAnnotation();
-                                lemmaAnno.setName(lemmaName);
-                                lemmaAnno.setNamespace(lemmaNamespace);
-                                lemmaAnno.setValue(lemma);
-                                tok.addAnnotation(lemmaAnno);
-                            }
+		}
 
-                        }
+		/**
+		 * {@inheritDoc PepperMapper#setDocument(SDocument)}
+		 * 
+		 */
+		@Override
+		public DOCUMENT_STATUS mapSDocument() {
 
+			String lang = "en"; // TODO: setup multiple languages with built-in lemmatizer lexicon files
+			String posAnno = (String) getProperties().getProperties().getOrDefault(LemmatizerProperties.POS_ANNO,
+					"pos");
+			boolean noLower = Boolean
+					.valueOf(getProperties().getProperties().getProperty(LemmatizerProperties.NO_LOWER));
+			boolean allowUnknown = Boolean
+					.valueOf(getProperties().getProperties().getProperty(LemmatizerProperties.ALLOW_UNKNOWN));
+			boolean makeUnknownLower = Boolean
+					.valueOf(getProperties().getProperties().getProperty(LemmatizerProperties.MAKE_UNKNOWN_LOWER));
+			String unknownString = (String) getProperties().getProperties()
+					.getOrDefault(LemmatizerProperties.UNKNOWN_STRING, null);
+			String lemmaName = (String) getProperties().getProperties().getOrDefault(LemmatizerProperties.LEMMA_NAME,
+					"lemma");
+			String lemmaNamespace = (String) getProperties().getProperties()
+					.getOrDefault(LemmatizerProperties.LEMMA_NAMESPACE, "default_ns");
 
-                    }// if document contains a document graph
-                    return (DOCUMENT_STATUS.COMPLETED);
-            }
-            
-            
-            private HashMap<String, String> getLexicon(InputStreamReader strm){
-                
-                wordPos2Lemma = new HashMap<>();
+			SDocumentGraph graph = getDocument().getDocumentGraph();
 
-                String line;
-                BufferedReader reader;
-                reader = new BufferedReader(strm);
+			// check for user defined lexicon path
+			String lexiconFile = (String) getProperties().getProperties()
+					.getOrDefault(LemmatizerProperties.LEXICON_FILE, null);
 
-                try {
-                    while ((line = reader.readLine()) != null)
-                    {
-                        String[] parts = line.split("\t");
-                        if (parts.length > 2)
-                        {
-                            String word = parts[0];
-                            String pos = parts[1];
-                            String lemma = parts[2];
-                            wordPos2Lemma.put(word + "\t" + pos, lemma);
-                            wordPos2Lemma.put(word, lemma);                                
-                        } else if (parts.length > 1){
-                            String word = parts[0];
-                            String lemma = parts[1];
-                            wordPos2Lemma.put(word, lemma);                                
-                        }
-                        else {
-                            System.out.println("Lexicon warning - ignoring line: " + line);
-                        }
-                    }
-                } catch (IOException ex) {
-                    Logger.getLogger(Lemmatizer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+			if (lexiconFile != null) {
+				if (!this.userLexicon) { // user-defined lexicon has not been loaded yet
+					InputStream is;
+					try {
+						is = new FileInputStream(lexiconFile);
 
-                try {    
-                    reader.close();
-                } catch (IOException ex) {
-                    Logger.getLogger(Lemmatizer.class.getName()).log(Level.SEVERE, null, ex);
-                }                
-                
-                return wordPos2Lemma;
-                
-            }
-            
+					} catch (FileNotFoundException e) {
+						throw new PepperModuleDataException(this, "Lexicon file not found: " + lexiconFile);
+					}
+					InputStreamReader isr = new InputStreamReader(is);
+					this.wordPos2Lemma = getLexicon(isr);
+					this.userLexicon = true;
+				}
+
+			}
+
+			if ((getDocument().getDocumentGraph() != null) && (graph.getTextualDSs().size() > 0)) {
+				// if document contains a document graph
+				List<SToken> tokens = getDocument().getDocumentGraph().getTokens();
+				for (SToken tok : tokens) {
+					// Check if the token has a pos annotation
+					String pos = null;
+					Set<SAnnotation> tok_annos = tok.getAnnotations();
+					for (SAnnotation anno : tok_annos) {
+						if (posAnno.equals(anno.getName())) {
+							pos = anno.getValue_STEXT();
+						}
+					}
+					String word = "";
+					word = graph.getText(tok);
+					String lemma = null;
+					if (pos != null) {
+						if (this.wordPos2Lemma.containsKey(word + "\t" + pos)) {
+							lemma = wordPos2Lemma.get(word + "\t" + pos);
+						} else if ((!noLower) && this.wordPos2Lemma.containsKey(word.toLowerCase() + "\t" + pos)) {
+							lemma = wordPos2Lemma.get(word.toLowerCase() + "\t" + pos);
+						}
+					}
+					if (lemma == null) {
+						if (this.wordPos2Lemma.containsKey(word)) {
+							lemma = wordPos2Lemma.get(word);
+						} else if ((!noLower) && this.wordPos2Lemma.containsKey(word.toLowerCase())) {
+							lemma = wordPos2Lemma.get(word.toLowerCase());
+						}
+					}
+					if (lemma == null && !allowUnknown && !makeUnknownLower) {
+						lemma = word;
+					} else if (lemma == null && !allowUnknown) {
+						lemma = word.toLowerCase();
+					}
+					if (unknownString != null) {
+						lemma = unknownString;
+					}
+					if (lemma != null) {
+						SAnnotation lemmaAnno = SaltFactory.createSAnnotation();
+						lemmaAnno.setName(lemmaName);
+						lemmaAnno.setNamespace(lemmaNamespace);
+						lemmaAnno.setValue(lemma);
+						tok.addAnnotation(lemmaAnno);
+					}
+
+				}
+
+			} // if document contains a document graph
+			return (DOCUMENT_STATUS.COMPLETED);
+		}
+
+		private HashMap<String, String> getLexicon(InputStreamReader strm) {
+
+			wordPos2Lemma = new HashMap<>();
+
+			String line;
+			BufferedReader reader;
+			reader = new BufferedReader(strm);
+
+			try {
+				while ((line = reader.readLine()) != null) {
+					String[] parts = line.split("\t");
+					if (parts.length > 2) {
+						String word = parts[0];
+						String pos = parts[1];
+						String lemma = parts[2];
+						wordPos2Lemma.put(word + "\t" + pos, lemma);
+						wordPos2Lemma.put(word, lemma);
+					} else if (parts.length > 1) {
+						String word = parts[0];
+						String lemma = parts[1];
+						wordPos2Lemma.put(word, lemma);
+					} else {
+						System.out.println("Lexicon warning - ignoring line: " + line);
+					}
+				}
+			} catch (IOException ex) {
+				Logger.getLogger(Lemmatizer.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
+			try {
+				reader.close();
+			} catch (IOException ex) {
+				Logger.getLogger(Lemmatizer.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
+			return wordPos2Lemma;
+
+		}
+
 	}
 }
