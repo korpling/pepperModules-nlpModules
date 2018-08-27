@@ -1,6 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.corpus-tools</groupId>
@@ -9,7 +7,7 @@
 	</parent>
 	<artifactId>pepperModules-nlpModules</artifactId>
 	<name>${project.groupId}.${project.artifactId}</name>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.2.1</version>
 	<packaging>bundle</packaging>
 	<description>This project provides an access to the tokenizer of Salt via pepper. This is a java implementation of the TreeTagger tokenizer. The tokenizer will tokenize all STetxualDS objects of each document and will create word-like SToken objects.</description>
 	<url>https://github.com/korpling/pepperModules-nlpModules</url>
@@ -29,7 +27,7 @@
 		<connection>scm:git:git://github.com/korpling/pepperModules-nlpModules.git</connection>
 		<developerConnection>scm:git:git@github.com:korpling/pepperModules-nlpModules.git</developerConnection>
 		<url>https://github.com/korpling/pepperModules-nlpModules</url>
-		<tag>HEAD</tag>
+		<tag>pepperModules-nlpModules-1.2.1</tag>
 	</scm>
 
 	<dependencies>
