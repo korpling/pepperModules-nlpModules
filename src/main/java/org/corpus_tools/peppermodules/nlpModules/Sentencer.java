@@ -66,7 +66,6 @@ public class Sentencer extends PepperManipulatorImpl {
 		setSupplierContact(URI.createURI(PepperConfiguration.EMAIL));
 		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-nlpModules"));
 		setDesc("The sentencer is a Pepper module to bundle tokens to sentences. Therefore it creates a {@link SSpan} object for each sentence and connects that sentence with a set of tokens, belonging to the sentence. A sentence is identified as being determined by punctuations ('.', '!' and * '?'). The sentencer uses the abbreviation lists of Salt to identify abbreviations. ");
-		this.setProperties(new TokenizerProperties());
 	}
 
 	/**

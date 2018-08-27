@@ -24,13 +24,11 @@ import org.corpus_tools.pepper.modules.PepperModuleProperty;
  *
  * @author Amir Zeldes
  */
-public class LemmatizerProperties extends PepperModuleProperties  {
-
+public class LemmatizerProperties extends PepperModuleProperties {
 
 	public static final String PREFIX = "lemmatizer.";
 
-
-        public final static String POS_ANNO = PREFIX + "posAnno";
+	public final static String POS_ANNO = PREFIX + "posAnno";
 	public final static String NO_LOWER = PREFIX + "noLower";
 	public final static String ALLOW_UNKNOWN = PREFIX + "allowUnknown";
 	public final static String MAKE_UNKNOWN_LOWER = PREFIX + "makeUnknownLower";
@@ -39,16 +37,26 @@ public class LemmatizerProperties extends PepperModuleProperties  {
 	public final static String LEMMA_NAMESPACE = PREFIX + "lemmaNamespace";
 	public final static String LEXICON_FILE = PREFIX + "lexiconFile";
 
-        
 	public LemmatizerProperties() {
-		this.addProperty(new PepperModuleProperty<String>(POS_ANNO, String.class, "Name of a part of speech annotation to check (default: pos).", "pos", false));
-		this.addProperty(new PepperModuleProperty<Boolean>(NO_LOWER, Boolean.class, "Normally lower cased forms are searched if exact match is not found, set noLower to TRUE to override (default: FALSE).", false, false));
-		this.addProperty(new PepperModuleProperty<Boolean>(ALLOW_UNKNOWN, Boolean.class, "If no lemma is found, the token's string will be used instead, set noUnknown to FALSE to use the unknownString value instead (default: FALSE).", false, false));
-		this.addProperty(new PepperModuleProperty<Boolean>(MAKE_UNKNOWN_LOWER, Boolean.class, "Optionally, when using the token string instead of an unknown lemma, the value can be lower cased (default: FALSE).", false, false));
-		this.addProperty(new PepperModuleProperty<String>(UNKNOWN_STRING, String.class, "Specifies a string to use for all unknown lemmas.", null, false));
-		this.addProperty(new PepperModuleProperty<String>(LEMMA_NAME, String.class, "Specifies the name of the lemma annotation (default: lemma).", "lemma", false));
-		this.addProperty(new PepperModuleProperty<String>(LEMMA_NAMESPACE, String.class, "Specifies the namespace for the lemma annotation (default: default_ns).", "default_ns", false));
-		this.addProperty(new PepperModuleProperty<String>(LEXICON_FILE, String.class, "Optional path to a file containing the lemma lexicon, if not using a built-in lexicon.", null, false));
-        }
-    
+		this.addProperty(new PepperModuleProperty<String>(POS_ANNO, String.class,
+				"Name of a part of speech annotation to check (default: pos).", "pos", false));
+		this.addProperty(new PepperModuleProperty<Boolean>(NO_LOWER, Boolean.class,
+				"Normally lower cased forms are searched if exact match is not found, set noLower to TRUE to override (default: FALSE).",
+				false, false));
+		this.addProperty(new PepperModuleProperty<Boolean>(ALLOW_UNKNOWN, Boolean.class,
+				"If no lemma is found, the token's string will be used instead, set noUnknown to FALSE to use the unknownString value instead (default: FALSE).",
+				false, false));
+		this.addProperty(new PepperModuleProperty<Boolean>(MAKE_UNKNOWN_LOWER, Boolean.class,
+				"Optionally, when using the token string instead of an unknown lemma, the value can be lower cased (default: FALSE).",
+				false, false));
+		this.addProperty(new PepperModuleProperty<String>(UNKNOWN_STRING, String.class,
+				"Specifies a string to use for all unknown lemmas.", null, false));
+		this.addProperty(new PepperModuleProperty<String>(LEMMA_NAME, String.class,
+				"Specifies the name of the lemma annotation (default: lemma).", "lemma", false));
+		this.addProperty(new PepperModuleProperty<String>(LEMMA_NAMESPACE, String.class,
+				"Specifies the namespace for the lemma annotation (default: default_ns).", "default_ns", false));
+		this.addProperty(new PepperModuleProperty<String>(LEXICON_FILE, String.class,
+				"Optional path to a file containing the lemma lexicon, if not using a built-in lexicon.", null, false));
+	}
+
 }
