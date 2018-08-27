@@ -64,7 +64,7 @@ public class Lemmatizer extends PepperManipulatorImpl {
 		setSupplierContact(URI.createURI(PepperConfiguration.EMAIL));
 		setSupplierHomepage(URI.createURI("https://github.com/korpling/pepperModules-nlpModules"));
 		setDesc("The lemmatizer is a Pepper module to lemmatize tokens. By default English lemmatization is supported.");
-		this.setProperties(new TokenizerProperties());
+		this.setProperties(new LemmatizerProperties());
 	}
 
 	/**
