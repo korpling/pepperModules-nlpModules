@@ -15,7 +15,7 @@
  *
  *
  */
-package LemmatizerTest;
+package org.corpus_tools.peppermodules.nlpModules.tests;
 
 /**
  *
