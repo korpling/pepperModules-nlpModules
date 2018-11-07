@@ -19,6 +19,8 @@ package org.corpus_tools.peppermodules.nlpModules;
 
 import java.io.File;
 
+import com.neovisionaries.i18n.LanguageCode;
+
 import org.corpus_tools.pepper.modules.PepperModuleProperties;
 import org.corpus_tools.pepper.modules.PepperModuleProperty;
 import org.corpus_tools.pepper.modules.exceptions.PepperModuleException;
@@ -37,7 +39,8 @@ public class TokenizerProperties extends PepperModuleProperties {
 	 * treetagger.
 	 */
 	public final static String PROP_ABBREVIATION_FOLDER = PREFIX + "abbreviationFolder";
-  public final static String PROP_ADD_TEXT_TO_SPAN = PREFIX + "addTextToSpan";
+	public final static String PROP_ADD_TEXT_TO_SPAN = PREFIX + "addTextToSpan";
+	public final static String PROP_LANGUAGE_CODE = PREFIX + "languageCode";
 
 	public boolean checkProperty(PepperModuleProperty<?> prop) {
 		super.checkProperty(prop);
@@ -47,22 +50,28 @@ public class TokenizerProperties extends PepperModuleProperties {
 			if (!file.exists())
 				throw new PepperModuleException("The file set to property '" + PROP_ABBREVIATION_FOLDER + "' does not exist.");
 			if (!file.isDirectory())
-				throw new PepperModuleException("The file '" + file.getAbsolutePath() + "'set to property '" + PROP_ABBREVIATION_FOLDER + "' is not a directory.");
+				throw new PepperModuleException("The file '" + file.getAbsolutePath() + "'set to property '"
+						+ PROP_ABBREVIATION_FOLDER + "' is not a directory.");
 		}
 
 		return (true);
 	}
 
 	public TokenizerProperties() {
-		this.addProperty(new PepperModuleProperty<>(PROP_ABBREVIATION_FOLDER, File.class, "Since the TreeTagger tokenizer produces better results, when it knows about abbreviations used in the text corresponding to the language of the text, it is possible to feed the Tokenizer module with lists of abbreviations.", null, false));
-    this.addProperty(new PepperModuleProperty<>(PROP_ADD_TEXT_TO_SPAN, Boolean.class, "For existing tokens, add the original text as annotation to the newly created span", false, false));
+		this.addProperty(new PepperModuleProperty<>(PROP_ABBREVIATION_FOLDER, File.class,
+				"Since the TreeTagger tokenizer produces better results, when it knows about abbreviations used in the text corresponding to the language of the text, it is possible to feed the Tokenizer module with lists of abbreviations.",
+				null, false));
+		this.addProperty(new PepperModuleProperty<>(PROP_ADD_TEXT_TO_SPAN, Boolean.class,
+				"For existing tokens, add the original text as annotation to the newly created span", false, false));
+		this.addProperty(new PepperModuleProperty<>(PROP_LANGUAGE_CODE, String.class,
+				"Language code (e.g. \"en\", \"de\") of text. If not set, the language will be detected automatically.", null,
+				false));
 	}
 
 	/**
-	 * Since the TreeTagger tokenizer produces better results, when it knows
-	 * about abbreviations used in the text corresponding to the language of the
-	 * text, it is possible to feed the Tokenizer module with lists of
-	 * abbreviations.
+	 * Since the TreeTagger tokenizer produces better results, when it knows about
+	 * abbreviations used in the text corresponding to the language of the text, it
+	 * is possible to feed the Tokenizer module with lists of abbreviations.
 	 * 
 	 * @return
 	 */
@@ -70,13 +79,22 @@ public class TokenizerProperties extends PepperModuleProperties {
 		File abbFolder = ((File) this.getProperty(PROP_ABBREVIATION_FOLDER).getValue());
 		return (abbFolder);
 	}
-  
-  public boolean getAddTextToSpan() {
-      Boolean b = (Boolean) this.getProperty(PROP_ADD_TEXT_TO_SPAN).getValue();
-      if(b != null) {
-        return b;
-      } else {
-        return false;
-      }
-  }
+
+	public boolean getAddTextToSpan() {
+		Boolean b = (Boolean) this.getProperty(PROP_ADD_TEXT_TO_SPAN).getValue();
+		if (b != null) {
+			return b;
+		} else {
+			return false;
+		}
+	}
+
+	public LanguageCode getLanguageCode() {
+		LanguageCode lc = null;
+		String asString = (String) this.getProperty(PROP_LANGUAGE_CODE).getValue();
+		if(asString != null) {
+			lc = LanguageCode.getByCode(asString, false);
+		}
+		return lc;
+	}
 }

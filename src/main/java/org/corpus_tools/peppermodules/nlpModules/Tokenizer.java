@@ -142,11 +142,12 @@ public class Tokenizer extends PepperManipulatorImpl {
     public DOCUMENT_STATUS mapSDocument() {
       SDocumentGraph sDocGraph = getDocument().getDocumentGraph();
       if (sDocGraph != null) {// if document contains a document graph
+        TokenizerProperties props = (TokenizerProperties) this.getProperties();
         org.corpus_tools.peppermodules.nlpModules.tokenizer.Tokenizer tokenizer
           = new org.corpus_tools.peppermodules.nlpModules.tokenizer.Tokenizer();
 
         tokenizer.setsDocumentGraph(sDocGraph);
-        tokenizer.setAddTextToSpan(((TokenizerProperties) this.getProperties()).getAddTextToSpan());
+        tokenizer.setAddTextToSpan(props.getAddTextToSpan());
 
         if (abbreviationMap != null) {
           Set<LanguageCode> keys = abbreviationMap.keySet();
@@ -160,7 +161,7 @@ public class Tokenizer extends PepperManipulatorImpl {
             texts.add(sTextualDs);
           }
           for (STextualDS sTextualDs : texts) {
-            tokenizer.tokenize(sTextualDs);
+            tokenizer.tokenize(sTextualDs, props.getLanguageCode());
           }
         }
       }// if document contains a document graph
